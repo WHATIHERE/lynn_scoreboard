@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.31.0/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        html {
+            background: transparent !important;
+            /* background: black; */
+        }
+
+        .jj_blur {
+            background-color: rgba(232, 121, 249, 0.404);
+        }
+
+        .jj_blur_list {
+            background-color: rgba(234, 100, 255, 0.692);
+        }
+
+        .img_server {
+            width: 300px;
+            height: 300px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="flex justify-center" id="app">
+        <!-- ไอคอนเซิฟเวอร์ -->
+        <div class="w-[800px] h-96 mt-[50px] rounded-xl relative jj_blur" v-if="is_open">
+            <div class="relative md:container md:mx-auto">
+                <img src="./images/nextstep.png" alt="jj_copyx?" class="img_server z-[100] top-[70px] left-[-130px]
+                absolute">
+            </div>
+            <!-- มุมบนไอดีผู้เล่นของแต่ละคน -->
+            <div class="absolute top-[-20px] right-0">
+                <div class="bg-white shadow-xl shadow-fuchsia-600 w-[100px] h-[130px] rounded relative">
+                    <div class="text-center text-blue-700 text-2xl top-[10px] left-[5px] ">
+                        <p>ID</p>
+                        <span id="ID">{{id}}</span>
+                    </div>
+                    <div class="text-center text-blue-700 text-2xl top-[20px] left-[5px]">
+                        <div>ONLINE</div>
+                        <span>{{online}}/128</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ชื่อ เบอร์โทร อาชีพ  -->
+            <div class="flex justify-center mt-[50px] relative text-white font-mono">
+                <div class=" jj_blur_list w-[450px] h-[50px] rounded-lg border-2 border-fuchsia-600">
+                    <div class="text-2xl top-[8px] left-[190px] absolute">
+                        <span>Name:</span>
+                    </div>
+                    <div class="text-2xl top-[8px] left-[350px] absolute">
+                        <span>{{ name }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-center mt-[20px] relative text-white font-mono">
+                <div class=" jj_blur_list w-[450px] h-[50px] rounded-lg border-2 border-fuchsia-600">
+                    <div class="text-2xl top-[8px] left-[190px] absolute">
+                        <span>PHONE:</span>
+                    </div>
+                    <div class="text-2xl top-[8px] left-[350px] absolute">
+                        <span>{{ phone_number }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-center mt-[20px] relative text-white font-mono">
+                <div class=" jj_blur_list w-[450px] h-[50px] rounded-lg border-2 border-fuchsia-600">
+                    <div class="text-2xl top-[8px] left-[190px] absolute">
+                        <span>JOBS:</span>
+                    </div>
+                    <div class="text-2xl top-[8px] left-[350px] absolute">
+                        <span>{{ label }}</span>
+                    </div>
+                </div>
+            </div>
+            <!-- ไอคอนงาน  -->
+
+            <div class="flex justify-center mt-[20px] relative text-white font-mono">
+                <div class=" jj_blur_list w-[90px] h-[50px] ml-[-360px] rounded-lg border-2 border-fuchsia-600 ">
+                    <div class="absolute text-2xl top-[10px]">
+                        <span>👮</span>
+                    </div>
+                    <div class="absolute text-2xl top-[10px] left-[212px]">
+                        <span>{{police}}</span>
+                    </div>
+                </div>
+
+            </div>
+            <div class="flex justify-center mt-[-50px] relative text-white font-mono">
+                <div class="flex jj_blur_list w-[90px] h-[50px] rounded-lg border-2 border-fuchsia-600 ml-[-120px] ">
+                    <div class="absolute text-2xl top-[10px]">
+                        <span>👨‍🔬</span>
+                    </div>
+                    <div class="absolute text-2xl top-[10px] left-[330px]">
+                        <span>{{ambulance}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-center mt-[-50px] relative text-white font-mono">
+                <div class="flex jj_blur_list w-[90px] h-[50px] rounded-lg border-2 border-fuchsia-600 ml-[90px] ">
+                    <div class="absolute text-2xl top-[10px]">
+                        <span>👨‍🍳</span>
+                    </div>
+                    <div class="absolute text-2xl top-[10px] left-[440px]">
+                        <span>311</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        const { createApp } = Vue
+        createApp({
+            data() {
+                return {
+                    is_open: false,
+                    police: 0,
+                    ambulance: 0,
+                    label: 'ไม่พบข้อมูล',
+                    phone_number: 'ไม่พบเบอร์โทรศัพท์',
+                    name: 'ไม่พบชื่อผู้เล่น',
+                    id: 0,
+                    online: 0
+                }
+            },
+            mounted() {
+                window.addEventListener('message', function (e) {
+                    let res = e.data
+                    if (res.type == 'is_open') {
+                        this.is_open = true
+                        this.police = res.status.police
+                        this.ambulance = res.status.ambulance
+                        this.label = res.status.user_data.job
+                        this.phone_number = res.status.user_data.phone_number
+                        this.name = res.status.user_data.firstname + ' ' + res.status.user_data.lastname
+                        this.id = res.status.playerId
+                        this.online = res.status.total
+                    }
+                    if (res.type == 'is_close') {
+                        this.is_open = false
+                    }
+                }.bind(this))
+            },
+            methods: {
+            }
+        }).mount('#app')
+    </script>
+</body>
+
+</html>
